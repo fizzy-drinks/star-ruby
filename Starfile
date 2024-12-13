@@ -13,13 +13,25 @@ model(tasks) {
 }
 
 router {
-  get "/" do
-    models.tasks.where
-  end
+  get("/") {
+    use {
+      query {
+        title String
+      }
+    }
 
-  post "/" do |req|
-    models.tasks.create(title: req.body["title"])
-  end
+    app.models.tasks.where(title:).to_json
+  }
+
+  post("/") {
+    use {
+      body {
+        title String
+      }
+    }
+
+    app.models.tasks.create(title:).to_json
+  }
 }
 
 main {

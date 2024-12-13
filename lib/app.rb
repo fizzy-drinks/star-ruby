@@ -29,7 +29,10 @@ module Star
         end
 
         uri, query = uri.split("?")
-        query = query.to_s.split("&").map { |pair| pair.split("=") }.to_h
+        query = query.to_s.split("&").each_with_object({}) { |pair, obj|
+          key, value = pair.split("=")
+          [key, value || ""]
+        }
         request = Router::Request.new(method:, uri:, query:, headers:)
 
         content_length = headers["content-length"].to_i
