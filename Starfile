@@ -7,3 +7,9 @@ model(tasks) {
   created_at { date { DateTime.now } }
   date_due { date { DateTime.now } }
 }
+
+main {
+  puts app.to_json
+
+  puts app.models.tasks.to_json
+}

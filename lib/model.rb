@@ -1,5 +1,3 @@
-require "json"
-
 module Star
   class Model
     def initialize(app, name)
@@ -36,31 +34,6 @@ module Star
           {name:, type: datatype, required:, has_default: !default_proc.nil?}.to_json(*)
         end
       end
-    end
-  end
-
-  class App
-    def initialize name
-      @name = name
-      @models = ModelCollection.new
-    end
-
-    attr_reader :name, :models
-
-    def migrate!
-      {tables: models.map { |model| [model.name, []] }.to_h}
-    end
-
-    def to_json(*)
-      {name:, models:}.to_json(*)
-    end
-
-    class ModelCollection < Array
-      def method_missing name
-        find { |model| model.name == name }
-      end
-
-      def respond_to_missing? = true
     end
   end
 end
