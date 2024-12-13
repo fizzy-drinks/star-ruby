@@ -4,7 +4,7 @@ require "json"
 require_relative "../lib/app_builder"
 
 app = Star::AppBuilder.build {
-  instance_eval(File.read("./Starfile"), 'Starfile')
+  instance_eval(File.read("./Starfile"), File.absolute_path(Dir.pwd + '/Starfile'))
 }
 
 instance_exec(&app.method(:main)) if app.respond_to?(:main)
