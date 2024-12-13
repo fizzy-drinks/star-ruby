@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative "builders"
+require_relative "../lib/builders"
 
 app = Star::AppBuilder.build {
   instance_eval(File.read("./Starfile"))
