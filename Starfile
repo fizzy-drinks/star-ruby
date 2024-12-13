@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+app unhype
+
+model(tasks) {
+  title { required string }
+  created_at { date { DateTime.now } }
+  date_due { date { DateTime.now } }
+}

@@ -1,0 +1,66 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ast (2.4.2)
+    json (2.9.0)
+    language_server-protocol (3.17.0.3)
+    lint_roller (1.1.0)
+    logger (1.6.2)
+    parallel (1.26.3)
+    parser (3.3.6.0)
+      ast (~> 2.4.1)
+      racc
+    prism (1.2.0)
+    racc (1.8.1)
+    rainbow (3.1.1)
+    rbs (3.7.0)
+      logger
+    regexp_parser (2.9.3)
+    rubocop (1.69.2)
+      json (~> 2.3)
+      language_server-protocol (>= 3.17.0)
+      parallel (~> 1.10)
+      parser (>= 3.3.0.2)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 2.9.3, < 3.0)
+      rubocop-ast (>= 1.36.2, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 4.0)
+    rubocop-ast (1.36.2)
+      parser (>= 3.3.1.0)
+    rubocop-performance (1.23.0)
+      rubocop (>= 1.48.1, < 2.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
+    ruby-lsp (0.22.1)
+      language_server-protocol (~> 3.17.0)
+      prism (>= 1.2, < 2.0)
+      rbs (>= 3, < 4)
+      sorbet-runtime (>= 0.5.10782)
+    ruby-progressbar (1.13.0)
+    sorbet-runtime (0.5.11691)
+    standard (1.43.0)
+      language_server-protocol (~> 3.17.0.2)
+      lint_roller (~> 1.0)
+      rubocop (~> 1.69.1)
+      standard-custom (~> 1.0.0)
+      standard-performance (~> 1.6)
+    standard-custom (1.0.2)
+      lint_roller (~> 1.0)
+      rubocop (~> 1.50)
+    standard-performance (1.6.0)
+      lint_roller (~> 1.1)
+      rubocop-performance (~> 1.23.0)
+    unicode-display_width (3.1.2)
+      unicode-emoji (~> 4.0, >= 4.0.4)
+    unicode-emoji (4.0.4)
+
+PLATFORMS
+  arm64-darwin-23
+  ruby
+
+DEPENDENCIES
+  ruby-lsp (~> 0.22.1)
+  standard (~> 1.43)
+
+BUNDLED WITH
+   2.5.18
