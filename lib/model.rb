@@ -23,7 +23,7 @@ module Star
 
     def create(**kwargs)
       data = schema.properties.each_with_object({}) do |(name, prop), obj|
-        obj[name] = kwargs[name] || prop.default_proc.call
+        obj[name] = kwargs[name] || prop.default_proc&.call || nil
       end
 
       Instance.new(self, data)

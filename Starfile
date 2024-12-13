@@ -12,10 +12,16 @@ model(tasks) {
   date_due { date { DateTime.now } }
 }
 
+router {
+  get "/" do
+    models.tasks.where
+  end
+
+  post "/" do |req|
+    models.tasks.create(title: req.body["title"])
+  end
+}
+
 main {
-  models.tasks.update(match: {title: "foobar"}, update: {title: "baz"})
-
-  models.tasks.create title: "foobar"
-
-  puts app.models.tasks.where(title: "foobar").to_json
+  app.serve!
 }

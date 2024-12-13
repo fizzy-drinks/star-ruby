@@ -1,4 +1,5 @@
 require_relative "model_builder"
+require_relative "router_builder"
 require_relative "../app"
 
 module Star
@@ -10,12 +11,22 @@ module Star
       end
 
       def db adapter
-        app.define_singleton_method(:db) { adapter.new }
+        adapter_instance = adapter.new
+        app.define_singleton_method(:db) { adapter_instance }
       end
 
       def model(name, &block)
         app.models << ModelBuilder.build(app, name, &block) if name && block
         app.models
+      end
+
+      def router &block
+        if block
+          router_instance = RouterBuilder.build(app, &block)
+          app.define_singleton_method(:router) { router_instance }
+        else
+          app.router
+        end
       end
 
       def main(&block)
