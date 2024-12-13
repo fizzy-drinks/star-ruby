@@ -1,3 +1,4 @@
+require "time"
 require_relative "../model"
 
 module Star
@@ -33,12 +34,12 @@ module Star
         end
 
         def string(*, &block)
-          @property.datatype = :string
+          @property.datatype = String
           @property.default_proc = block if block
         end
 
         def date(*, &block)
-          @property.datatype = :date
+          @property.datatype = DateTime
           @property.default_proc = block if block
         end
 

@@ -9,6 +9,10 @@ module Star
         @app
       end
 
+      def db adapter
+        app.define_singleton_method(:db) { adapter.new }
+      end
+
       def model(name, &block)
         app.models << ModelBuilder.build(app, name, &block) if name && block
         app.models

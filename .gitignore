@@ -1,1 +1,4 @@
 .vscode
+
+# JSON adapter test file
+db.json

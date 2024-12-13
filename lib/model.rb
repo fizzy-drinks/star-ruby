@@ -1,3 +1,6 @@
+require_relative "model/instance"
+require_relative "model/schema"
+
 module Star
   class Model
     def initialize(app, name)
@@ -8,32 +11,37 @@ module Star
 
     attr_reader :app, :name, :schema
 
-    def to_json(*)
-      {name:, schema:}.to_json(*)
+    def find(**kwargs)
+      Instance.new(self, app.db.find(name, kwargs))
     end
 
-    class Schema
-      def initialize
-        @properties = {}
+    def where(**kwargs)
+      app.db.where(name, kwargs) do |item|
+        Instance.new(self, item)
+      end
+    end
+
+    def create(**kwargs)
+      data = schema.properties.each_with_object({}) do |(name, prop), obj|
+        obj[name] = kwargs[name] || prop.default_proc.call
       end
 
-      attr_reader :properties
-
-      def add_property(property)
-        @properties[property.name] = property
-      end
-
-      def to_json(*)
-        {properties:}.to_json(*)
-      end
-
-      Property = Struct.new(
-        :name, :datatype, :required, :default_proc, keyword_init: true
-      ) do
-        def to_json(*)
-          {name:, type: datatype, required:, has_default: !default_proc.nil?}.to_json(*)
+      Instance.new(self, data)
+        .tap do |item|
+          app.db.insert(name, item)
         end
-      end
+    end
+
+    def update(match:, update:)
+      app.db.update(name, match, update)
+    end
+
+    def delete(**kwargs)
+      app.db.delete(name, kwargs)
+    end
+
+    def to_json(*)
+      {name:, schema:}.to_json(*)
     end
   end
 end

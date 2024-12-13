@@ -5,7 +5,7 @@ module Star
       @models = ModelCollection.new
     end
 
-    attr_reader :name, :models
+    attr_reader :name, :models, :db
 
     def migrate!
       {tables: models.map { |model| [model.name, []] }.to_h}

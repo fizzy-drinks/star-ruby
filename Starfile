@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 
+require "./lib/database_adapter/json"
+
 app unhype
+
+db Star::DatabaseAdapter::Json
 
 model(tasks) {
   title { required string }
@@ -9,7 +13,9 @@ model(tasks) {
 }
 
 main {
-  puts app.to_json
+  models.tasks.update(match: {title: "foobar"}, update: {title: "baz"})
 
-  puts app.models.tasks.to_json
+  models.tasks.create title: "foobar"
+
+  puts app.models.tasks.where(title: "foobar").to_json
 }
