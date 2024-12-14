@@ -29,6 +29,8 @@ module Star
       def to_json(*)
         data.to_json(*)
       end
+
+      alias_method :to_s, :to_json
     end
   end
 end
