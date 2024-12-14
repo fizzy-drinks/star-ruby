@@ -9,7 +9,7 @@ module Star
 
         results = db.execute "select * from #{collection} #{where_clause(valid_matchers)} ;"
 
-        col_names = columns collection
+        col_names = columns(collection).map { _1[1] }
         results.empty? ? nil : col_names.zip(results[0]).to_h
       end
 
@@ -17,12 +17,12 @@ module Star
         valid_matchers = matcher.filter { |_k, v| !v.nil? }
         results = db.execute "select * from #{collection} #{where_clause(valid_matchers)} ;"
 
-        col_names = columns collection
+        col_names = columns(collection).map { _1[1] }
         results.map { |row| col_names.zip(row).to_h }
       end
 
       def insert(collection, item)
-        col_names = columns collection
+        col_names = columns(collection).map { _1[1] }
         sorted_values = col_names.map { |col| item.data[col.to_sym].to_json }
         db.execute "insert into #{collection} values (#{sorted_values.join(",")})"
       end
@@ -41,8 +41,17 @@ module Star
       end
 
       def prepare(model)
-        columns = model.schema.properties.values.map { |prop| [prop.name, prop.datatype] }
-        create_table_if_not_exists(model.name, columns)
+        schema_cols = model.schema.properties.values.map { |prop| [prop.name, prop.datatype, prop.default_proc] }
+        create_table_if_not_exists(model.name, schema_cols)
+
+        existing_cols = columns(model.name)
+        missing_cols = schema_cols.filter { |(name_a)| existing_cols.none? { |(_i, name_b)| name_a.to_s == name_b.to_s } }
+
+        missing_cols.each do |(name, type, default)|
+          puts "Migrations: added #{model.name}.#{name} (#{type})"
+          default = "default #{default.call.to_json}" if default
+          db.execute "alter table #{model.name} add column #{name} #{type} #{default}"
+        end
       end
 
       private
@@ -58,8 +67,8 @@ module Star
         SQL
       end
 
-      def columns collection
-        db.execute("pragma table_info(#{collection})").map { _1[1] }
+      def columns(collection)
+        db.execute("pragma table_info(#{collection})")
       end
 
       def where_clause(matchers)

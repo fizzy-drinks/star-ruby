@@ -17,8 +17,10 @@ model(tasks) {
   title { required string }
   tasklist_id { required string }
   created_at { date { DateTime.now } }
+  modified_at { date { DateTime.now } }
   date_due { date { DateTime.now } }
   closed_at { date }
+  deleted_at { date }
 }
 
 router {
@@ -96,7 +98,7 @@ router {
               }
             }
 
-            update = {title:, date_due:, closed_at:}.filter { |k, v| !v.nil? }.to_h
+            update = {title:, date_due:, closed_at:, modified_at: DateTime.now}.filter { |k, v| !v.nil? }.to_h
             app.models.tasks.update(match: {tasklist_id:, id: task_id}, update:).to_json
           }
 
