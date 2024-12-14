@@ -22,8 +22,10 @@ module Star
       end
 
       def add_property(property)
-        @properties[property.name] = property
+        properties[property.name] = property
       end
+
+      def prop?(name) = !properties[name].nil?
 
       def to_json(*)
         {properties:}.to_json(*)
