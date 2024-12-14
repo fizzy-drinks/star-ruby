@@ -42,6 +42,10 @@ module Star
 
         res.body = res.instance_exec(request, &route.handler)
         res
+      rescue AuthorizationError
+        res.status = 401
+        res.body = {message: :Unauthorized}.to_json
+        res
       rescue Util::Validation::ValidationError => e
         res.body = {message: e.message}.to_json
         res.status = 400
@@ -49,7 +53,7 @@ module Star
       rescue => e
         warn "#{e.class.name}: #{e.message}\n  #{e.backtrace.join("\n  ")}"
         res.status = 500
-        res.body = {message: "Internal server error"}.to_json
+        res.body = {message: :"Internal server error"}.to_json
         res
       end
     end
