@@ -39,8 +39,7 @@ router {
       }
     }
 
-    id = SecureRandom.uuid
-    app.models.tasklists.create(id:, name:).to_json
+    app.models.tasklists.create(name:).to_json
   }
 
   patch("/tasklists/{id}") {
@@ -73,8 +72,7 @@ router {
       }
     }
 
-    id = SecureRandom.uuid
-    app.models.tasks.create(id:, tasklist_id:, title:, date_due:).to_json
+    app.models.tasks.create(tasklist_id:, title:, date_due:).to_json
   }
 
   get("/tasklists/{tasklist_id}/tasks/{id}") {
