@@ -1,9 +1,9 @@
 require "sqlite3"
-require "pry"
+require_relative "base"
 
 module Star
   module DatabaseAdapter
-    class Sqlite
+    class Sqlite < Base
       def find(collection, matcher)
         valid_matchers = matcher.filter { |_k, v| !v.nil? }
 
