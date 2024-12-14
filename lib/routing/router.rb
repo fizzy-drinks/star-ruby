@@ -46,6 +46,11 @@ module Star
         res.body = {message: e.message}.to_json
         res.status = 400
         res
+      rescue => e
+        warn e.message
+        res.status = 500
+        res.body = {message: "Internal server error"}.to_json
+        res
       end
     end
 
@@ -61,5 +66,7 @@ module Star
 
     Request = Struct.new(:method, :uri, :headers, :query, :body, keyword_init: true)
     Route = Struct.new(:method, :matcher, :handler, :before, keyword_init: true)
+
+    class AuthorizationError < StandardError; end
   end
 end
