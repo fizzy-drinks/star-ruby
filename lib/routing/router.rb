@@ -47,7 +47,7 @@ module Star
         res.status = 400
         res
       rescue => e
-        warn e.message
+        warn "#{e.class.name}: #{e.message}\n  #{e.backtrace.join("\n  ")}"
         res.status = 500
         res.body = {message: "Internal server error"}.to_json
         res
