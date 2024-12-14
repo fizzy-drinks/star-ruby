@@ -7,4 +7,8 @@ app = Star::AppBuilder.build {
   instance_eval(File.read("./Starfile"), File.absolute_path(Dir.pwd + '/Starfile'))
 }
 
-instance_exec(&app.method(:main)) if app.respond_to?(:main)
+if app.respond_to?(:main)
+  instance_exec(&app.method(:main))
+else
+  app.serve!
+end

@@ -33,7 +33,3 @@ router {
     app.models.tasks.create(title:).to_json
   }
 }
-
-main {
-  app.serve!
-}
