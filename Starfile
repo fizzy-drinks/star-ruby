@@ -1,35 +1,43 @@
 #!/usr/bin/env ruby
 
+require "securerandom"
 require "./lib/database_adapter/json"
 
 app unhype
 
 db Star::DatabaseAdapter::Json
 
+model(task_lists) {
+  id { string { SecureRandom.uuid } }
+  name { required string }
+}
+
 model(tasks) {
+  id { string { SecureRandom.uuid } }
   title { required string }
+  task_list_id { required string }
   created_at { date { DateTime.now } }
   date_due { date { DateTime.now } }
 }
 
 router {
-  get("/") {
+  get("/tasklists") {
     use {
       query {
-        title String
+        name String
       }
     }
 
-    app.models.tasks.where(title:).to_json
+    app.models.task_lists.where(name:).to_json
   }
 
-  post("/") {
+  post("/tasklists") {
     use {
       body {
-        title String
+        name String
       }
     }
 
-    app.models.tasks.create(title:).to_json
+    app.models.task_lists.create(name:).to_json
   }
 }
