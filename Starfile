@@ -15,6 +15,7 @@ model(tasklists) {
 model(tasks) {
   id { string { SecureRandom.uuid } }
   title { required string }
+  description { string { "" } }
   tasklist_id { required string }
   created_at { date { DateTime.now } }
   modified_at { date { DateTime.now } }
@@ -26,6 +27,12 @@ model(tasks) {
 router {
   before {
     puts "#{request.method} #{request.uri}"
+
+    def now = DateTime.now
+
+    def modified_at = now
+
+    def deleted_at = now
   }
 
   tasklists {
@@ -85,25 +92,30 @@ router {
         }
 
         scope("{task_id}") {
+          use {
+            def id = task_id
+          }
+
           get {
-            app.models.tasks.find(tasklist_id:, id: task_id).to_json
+            app.models.tasks.find(tasklist_id:, id:).to_json
           }
 
           patch {
             use {
               body {
                 title { string }
+                description { string }
                 date_due { date }
                 closed_at { date }
               }
             }
 
-            update = {title:, date_due:, closed_at:, modified_at: DateTime.now}.filter { |k, v| !v.nil? }.to_h
-            app.models.tasks.update(match: {tasklist_id:, id: task_id}, update:).to_json
+            update = {title:, date_due:, closed_at:, description:, modified_at:}.filter { |k, v| !v.nil? }.to_h
+            app.models.tasks.update(match: {tasklist_id:, id:}, update:).to_json
           }
 
           delete {
-            app.models.tasks.delete(tasklist_id:, id: task_id).to_json
+            app.models.tasks.update(match: {tasklist_id:, id:}, update: {deleted_at:}).to_json
           }
         }
       }
