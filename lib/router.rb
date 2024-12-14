@@ -14,6 +14,7 @@ module Star
       route = routes.find { |route| uri === route.matcher && route.method.to_s.upcase == method }
       unless route
         res.status = 404
+        res.body = {message: "Not found"}.to_json
         return res
       end
 
