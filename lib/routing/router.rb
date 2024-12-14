@@ -36,7 +36,10 @@ module Star
           res.define_singleton_method(variable.to_sym) { segments[i] }
         end
 
-        res.instance_exec(request, &route.before) if route.before
+        route.before.compact.each do |block|
+          res.instance_exec(request, &block)
+        end
+
         res.body = res.instance_exec(request, &route.handler)
         res
       rescue Util::Validation::ValidationError => e

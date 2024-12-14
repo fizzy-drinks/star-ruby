@@ -28,11 +28,13 @@ router {
   before {
     puts "#{request.method} #{request.uri}"
 
-    def now = DateTime.now
+    use {
+      def now = DateTime.now
 
-    def modified_at = now
+      def modified_at = now
 
-    def deleted_at = now
+      def deleted_at = now
+    }
   }
 
   tasklists {
@@ -57,8 +59,12 @@ router {
     }
 
     scope("{tasklist_id}") {
+      before {
+        def id = tasklist_id
+      }
+
       get {
-        app.models.tasklists.find(id: tasklist_id).to_json
+        app.models.tasklists.find(id:).to_json
       }
 
       patch {
@@ -68,11 +74,11 @@ router {
           }
         }
 
-        app.models.tasklists.update(match: {id: tasklist_id}, update: {name:})
+        app.models.tasklists.update(match: {id:}, update: {name:})
       }
 
       delete {
-        app.models.tasklists.delete(id: tasklist_id)
+        app.models.tasklists.delete(id:)
       }
 
       tasks {
@@ -92,7 +98,7 @@ router {
         }
 
         scope("{task_id}") {
-          use {
+          before {
             def id = task_id
           }
 
