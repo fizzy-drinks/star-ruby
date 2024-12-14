@@ -8,6 +8,12 @@ module Star
         @properties = {}
       end
 
+      def headers(&block)
+        validation = ContextValidator.new(request.headers)
+        validation.instance_exec(&block)
+        properties.merge!(validation.properties)
+      end
+
       def query(&block)
         validation = ContextValidator.new(request.query)
         validation.instance_exec(&block)
