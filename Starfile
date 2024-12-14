@@ -24,7 +24,7 @@ router {
   get("/tasklists") {
     use {
       query {
-        name String
+        name Object
       }
     }
 
@@ -39,5 +39,9 @@ router {
     }
 
     app.models.task_lists.create(name:).to_json
+  }
+
+  get("/tasklists/{tasklist_id}") {
+    app.models.task_lists.find(id: tasklist_id).to_json
   }
 }

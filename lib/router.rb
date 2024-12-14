@@ -7,15 +7,29 @@ module Star
 
     attr_reader :app, :routes
 
+    def route_match?(uri, matcher)
+      re = %r{^#{matcher.gsub(/\{[^{}\/]+\}/, "[^/]+")}/?$}
+      uri == matcher || uri =~ re
+    end
+
     def handle(request)
-      request => { uri:, method: }
+      request => { method:, uri: }
 
       res = Response.new(headers: {"Content-Type" => "application/json"}, status: 200, request:)
-      route = routes.find { |route| uri === route.matcher && route.method.to_s.upcase == method }
+      route = routes.find { |route| route_match?(uri, route.matcher) && route.method.to_s.upcase == method }
       unless route
         res.status = 404
         res.body = {message: "Not found"}.to_json
         return res
+      end
+
+      segments = uri.gsub(%r{^/+(.*)/+$}, '\1').split("/").reject(&:empty?)
+      matcher_segments = route.matcher.gsub(%r{^/+(.*)/+$}, '\1').split("/").reject(&:empty?)
+      matcher_segments.each_with_index do |segment, i|
+        variable = segment.sub(/^{(.*)}$/, '\1')
+        next segment if variable == segment
+
+        res.define_singleton_method(variable.to_sym) { segments[i] }
       end
 
       res.body = res.instance_exec(request, &route.handler)
@@ -75,7 +89,7 @@ module Star
       end
     end
 
-    Request = Struct.new(:Request, :method, :query, :uri, :body, :headers, keyword_init: true)
+    Request = Struct.new(:method, :uri, :headers, :query, :body, keyword_init: true)
     Route = Struct.new(:Route, :method, :matcher, :handler, keyword_init: true)
 
     class ValidationError < StandardError; end
