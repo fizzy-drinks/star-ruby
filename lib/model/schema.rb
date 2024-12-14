@@ -15,6 +15,8 @@ module Star
       def map(data)
         data.each_with_object({}) do |(key, value), obj|
           property = properties[key.to_sym]
+          next unless property
+
           value = map_to_type(property, value)
 
           obj[key] = value
