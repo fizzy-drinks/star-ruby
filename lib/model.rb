@@ -28,8 +28,8 @@ module Star
       end
 
       Instance.new(self, data)
-        .tap do |item|
-          app.db.insert(name, item)
+        .tap do
+          app.db.insert(name, data)
         end
     end
 
