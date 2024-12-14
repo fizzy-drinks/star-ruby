@@ -24,6 +24,11 @@ module Star
         @property.default_proc = block if block
       end
 
+      def int(*, &block)
+        @property.datatype = Integer
+        @property.default_proc = block if block
+      end
+
       def self.build name, &block
         builder = new(name)
         builder.instance_eval(&block)
