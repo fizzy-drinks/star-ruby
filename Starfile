@@ -24,6 +24,7 @@ model(tokens) {
 model(tasklists) {
   id { string { SecureRandom.uuid } }
   name { required string }
+  user_id { required string }
 }
 
 model(tasks) {
@@ -120,7 +121,7 @@ router {
         }
       }
 
-      app.models.tasklists.where(name:).to_json
+      app.models.tasklists.where(name:, user_id: current_user.id).to_json
     }
 
     post {
@@ -130,16 +131,24 @@ router {
         }
       }
 
-      app.models.tasklists.create(name:).to_json
+      app.models.tasklists.create(name:, user_id: current_user.id).to_json
     }
 
     scope("{tasklist_id}") {
       before {
         def id = tasklist_id
+
+        def current_tasklist
+          app.models.tasklists.find(id:) || raise(Star::Routing::NotFoundError)
+        end
+
+        def verify_tasklist_access!
+          raise Star::Routing::PermissionError unless current_tasklist.user_id == current_user.id
+        end
       }
 
       get {
-        app.models.tasklists.find(id:).to_json
+        current_tasklist.to_json
       }
 
       patch {
@@ -149,11 +158,11 @@ router {
           }
         }
 
-        app.models.tasklists.update(match: {id:}, update: {name:})
+        current_tasklist.update(name:).to_json
       }
 
       delete {
-        app.models.tasklists.delete(id:)
+        current_tasklist.delete!
       }
 
       tasks {
