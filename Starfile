@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 
 require "securerandom"
-require "./lib/database_adapter/json"
+require "./lib/database_adapter/sqlite"
 
 app unhype
 
-db Star::DatabaseAdapter::Json
+db Star::DatabaseAdapter::Sqlite
 
 model(tasklists) {
   id { string { SecureRandom.uuid } }
@@ -40,6 +40,20 @@ router {
     }
 
     app.models.tasklists.create(name:).to_json
+  }
+
+  patch("/tasklists/{id}") {
+    use {
+      body {
+        name String
+      }
+    }
+
+    app.models.tasklists.update(match: {id:}, update: {name:})
+  }
+
+  delete("/tasklists/{id}") {
+    app.models.tasklists.delete(id:)
   }
 
   get("/tasklists/{id}") {

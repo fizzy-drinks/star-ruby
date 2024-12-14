@@ -2,3 +2,6 @@
 
 # JSON adapter test file
 db.json
+
+# SQLite adapter test file
+db.sqlite3

@@ -5,3 +5,5 @@ group :development do
   gem "ruby-lsp", "~> 0.22.1"
   gem "standard", "~> 1.43"
 end
+
+gem "sqlite3", "~> 2.4"
