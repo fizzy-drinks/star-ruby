@@ -13,10 +13,6 @@ module Star
 
     attr_reader :name, :models, :db, :router
 
-    def migrate!
-      {tables: models.map { |model| [model.name, []] }.to_h}
-    end
-
     def serve!
       server = TCPServer.new(3000)
       while (session = server.accept)
