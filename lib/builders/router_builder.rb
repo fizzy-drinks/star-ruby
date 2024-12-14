@@ -1,4 +1,4 @@
-require_relative "../router"
+require_relative "../routing/router"
 
 module Star
   module Builders
@@ -12,7 +12,7 @@ module Star
       methods = %i[get post put patch delete options]
       methods.each do |method|
         define_method(method) do |matcher, &handler|
-          router.routes << Router::Route.new(method:, matcher:, handler:)
+          router.routes << Routing::Route.new(method:, matcher:, handler:)
         end
       end
 

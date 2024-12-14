@@ -1,14 +1,14 @@
 require "json"
 require "socket"
 require "time"
-require_relative "router"
+require_relative "routing/router"
 
 module Star
   class App
     def initialize name
       @name = name
       @models = ModelCollection.new
-      @router = Router.new(self)
+      @router = Routing::Router.new(self)
     end
 
     attr_reader :name, :models, :db, :router
@@ -29,7 +29,7 @@ module Star
           key, value = pair.split("=")
           obj[key] = value
         }
-        request = Router::Request.new(method:, uri:, query:, headers:)
+        request = Routing::Request.new(method:, uri:, query:, headers:)
 
         content_length = headers["content-length"].to_i
         if content_length > 0
