@@ -3,6 +3,11 @@ require_relative "router_builder"
 require_relative "../app"
 
 module Star
+  def self.load(where, module_name)
+    filename = File.join(Dir.pwd, "#{module_name}.star.rb")
+    where.instance_eval(File.read(filename), filename)
+  end
+
   module Builders
     class AppBuilder
       def app name = nil
