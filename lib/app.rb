@@ -20,8 +20,8 @@ module Star
 
         headers = {}
         until (header_line = session.gets.strip) == ""
-          header, content = header_line.split(":").map(&:strip)
-          headers[header.downcase] = content
+          header, *content = header_line.split(":").map(&:strip)
+          headers[header.downcase] = content.join(":")
         end
 
         uri, query = uri.split("?")
