@@ -3,11 +3,11 @@
 require "securerandom"
 require "base64"
 require "scrypt"
-require "./lib/database_adapter/sqlite"
+require "./lib/database_adapter/mongo"
 
 app unhype
 
-db Star::DatabaseAdapter::Sqlite
+db Star::DatabaseAdapter::MongoDB
 
 Star.load self, :models
 Star.load self, :router
