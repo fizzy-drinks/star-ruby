@@ -12,11 +12,13 @@ module Star
 
       def find(collection, matcher)
         data = read_data
+        data[collection.to_s] ||= []
         data[collection.to_s].find { |i| matcher.all? { |k, v| i[k.to_s] == v } }
       end
 
       def where(collection, matcher)
         data = read_data
+        data[collection.to_s] ||= []
         data[collection.to_s].filter { |i| matcher.all? { |k, v| i[k.to_s] == v } }
       end
 
