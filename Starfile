@@ -28,13 +28,11 @@ router {
   before {
     puts "#{request.method} #{request.uri}"
 
-    use {
-      def now = DateTime.now
+    def now = DateTime.now
 
-      def modified_at = now
+    def modified_at = now
 
-      def deleted_at = now
-    }
+    def deleted_at = now
   }
 
   tasklists {
