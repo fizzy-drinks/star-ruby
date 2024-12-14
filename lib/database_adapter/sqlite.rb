@@ -23,7 +23,7 @@ module Star
 
       def insert(collection, item)
         col_names = columns(collection).map { _1[1] }
-        sorted_values = col_names.map { |col| item.data[col.to_sym].to_json }
+        sorted_values = col_names.map { |col| item.data[col.to_s].to_json }
         db.execute "insert into #{collection} values (#{sorted_values.join(",")})"
       end
 
