@@ -10,4 +10,165 @@ app unhype
 db Star::DatabaseAdapter::MongoDB
 
 Star.load self, :models
-Star.load self, :router
+
+router {
+  before {
+    puts "#{request.method} #{request.uri}"
+
+    def now = DateTime.now
+
+    def authorize!
+      use {
+        headers {
+          authorization { string }
+        }
+      }
+
+      token = app.models.tokens.find(value: authorization)
+      raise Star::Routing::AuthorizationError unless token
+
+      @user = app.models.users.find(id: token.user_id)
+      raise Star::Routing::AuthorizationError unless current_user
+    end
+
+    def current_user = @user
+  }
+
+  tokens {
+    get {
+      use {
+        headers {
+          authorization { required string }
+        }
+      }
+
+      username, password = authorization.split(":")
+      user = app.models.users.find(username:)
+      raise Star::Routing::AuthorizationError unless user && SCrypt::Password.new(user.password) == password
+
+      token = app.models.tokens.create(user_id: user.id)
+      token.value.to_json
+    }
+  }
+
+  users {
+    post {
+      use {
+        body {
+          username { required string }
+          password { required string }
+        }
+      }
+
+      already_exists = app.models.users.find(username:)
+      next {message: "This username is taken!"} if already_exists
+
+      hashed = SCrypt::Password.create(password)
+      app.models.users.create(username:, password: hashed)
+
+      {username:}
+    }
+
+    get("me") {
+      authorize!
+      current_user => {username:, id:}
+      {username:, id:}
+    }
+  }
+
+  tasklists {
+    before { authorize! }
+
+    get {
+      use {
+        query {
+          name { string }
+        }
+      }
+
+      app.models.tasklists.where(name:, user_id: current_user.id)
+    }
+
+    post {
+      use {
+        body {
+          name { required string }
+        }
+      }
+
+      app.models.tasklists.create(name:, user_id: current_user.id)
+    }
+
+    scope("{tasklist_id}") {
+      before {
+        def id = tasklist_id
+
+        def current_tasklist
+          app.models.tasklists.find(id:) || raise(Star::Routing::NotFoundError)
+        end
+
+        def verify_tasklist_access!
+          raise Star::Routing::PermissionError unless current_tasklist.user_id == current_user.id
+        end
+      }
+
+      get { current_tasklist }
+
+      patch {
+        use {
+          body {
+            name { string }
+          }
+        }
+
+        current_tasklist.update(name:)
+      }
+
+      delete { current_tasklist.delete! }
+
+      tasks {
+        get { app.models.tasks.where(tasklist_id:) }
+
+        post {
+          use {
+            body {
+              title { required string }
+              date_due { date { DateTime.now } }
+            }
+          }
+
+          app.models.tasks.create(tasklist_id:, title:, date_due:)
+        }
+
+        scope("{task_id}") {
+          before {
+            def id = task_id
+
+            def current_task = app.models.tasks.find(tasklist_id:, id:)
+          }
+
+          get { current_task }
+
+          patch {
+            use {
+              body {
+                title { string }
+                description { string }
+                date_due { date }
+                closed_at { date }
+              }
+            }
+
+            update = {title:, date_due:, closed_at:, description:, modified_at: now}
+              .filter { |k, v| !v.nil? }
+              .to_h
+
+            current_task.update(update)
+          }
+
+          delete { current_task.update(deleted_at: now) }
+        }
+      }
+    }
+  }
+}
