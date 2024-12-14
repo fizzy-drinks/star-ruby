@@ -18,6 +18,7 @@ model(tasks) {
   task_list_id { required string }
   created_at { date { DateTime.now } }
   date_due { date { DateTime.now } }
+  closed_at { date }
 }
 
 router {
@@ -43,5 +44,25 @@ router {
 
   get("/tasklists/{tasklist_id}") {
     app.models.task_lists.find(id: tasklist_id).to_json
+  }
+
+  get("/tasklists/{tasklist_id}/tasks") {
+    app.models.tasks.where(tasklist_id:).to_json
+  }
+
+  post("/tasklists/{task_list_id}/tasks") {
+    use {
+      body {
+        title String
+        date_due Object
+      }
+    }
+
+    app.models.tasks.create(
+      id: SecureRandom.uuid,
+      task_list_id:,
+      title:,
+      date_due:
+    ).to_json
   }
 }
