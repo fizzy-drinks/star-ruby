@@ -9,9 +9,12 @@ module Star
 
           return value if value.nil? || value.is_a?(property.datatype)
 
-          if property.datatype == DateTime
-            return DateTime.iso8601(value)
-          elsif property.datatype == String
+          case
+          when property.datatype == DateTime && value.is_a?(Time)
+            return DateTime.iso8601(value.iso8601)
+          when property.datatype == DateTime
+            return DateTime.iso8601(value.to_s)
+          when property.datatype == String
             return value.to_s
           end
 
