@@ -42,19 +42,17 @@ module Star
 
         res.body = res.instance_exec(request, &route.handler)
         res
-      rescue AuthorizationError
-        res.status = 401
-        res.body = {message: :Unauthorized}.to_json
-        res
       rescue Util::Validation::ValidationError => e
-        res.body = {message: e.message}.to_json
-        res.status = 400
-        res
+        res.reject_with_message(e.message, 400)
+      rescue AuthorizationError
+        res.reject_with_message(:Unauthorized, 401)
+      rescue PermissionError
+        res.reject_with_message(:Forbidden, 403)
+      rescue NotFoundError
+        res.reject_with_message(:"Not found", 404)
       rescue => e
         warn "#{e.class.name}: #{e.message}\n  #{e.backtrace.join("\n  ")}"
-        res.status = 500
-        res.body = {message: :"Internal server error"}.to_json
-        res
+        res.reject_with_message(:"Internal server error", 500)
       end
     end
 
@@ -66,11 +64,21 @@ module Star
           define_singleton_method(key.to_sym) { value }
         end
       end
+
+      def reject_with_message(message, status)
+        self.status = status
+        self.body = {message: message}.to_json
+        self
+      end
     end
 
     Request = Struct.new(:method, :uri, :headers, :query, :body, keyword_init: true)
     Route = Struct.new(:method, :matcher, :handler, :before, keyword_init: true)
 
     class AuthorizationError < StandardError; end
+
+    class PermissionError < StandardError; end
+
+    class NotFoundError < StandardError; end
   end
 end
