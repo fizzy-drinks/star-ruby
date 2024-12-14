@@ -41,6 +41,10 @@ module Star
       app.db.delete(name, kwargs)
     end
 
+    def prepare!
+      app.db.prepare(self)
+    end
+
     def to_json(*)
       {name:, schema:}.to_json(*)
     end

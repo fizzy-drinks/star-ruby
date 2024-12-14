@@ -20,6 +20,9 @@ module Star
       def delete(collection, matcher)
         raise NotImplementedError
       end
+
+      def prepare(model)
+      end
     end
   end
 end

@@ -32,11 +32,17 @@ module Star
         values = update.map { |k, v| [k, v.to_json].join(" = ") }.join(",")
 
         db.execute "update #{collection} set #{values} #{where_clause(valid_matchers)}"
+        where(collection, matcher)
       end
 
       def delete(collection, matcher)
         valid_matchers = matcher.filter { |_k, v| !v.nil? }
         db.execute "delete from #{collection} #{where_clause(valid_matchers)}"
+      end
+
+      def prepare(model)
+        columns = model.schema.properties.values.map { |prop| [prop.name, prop.datatype] }
+        create_table_if_not_exists(model.name, columns)
       end
 
       private

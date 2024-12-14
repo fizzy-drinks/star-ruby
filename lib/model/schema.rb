@@ -41,7 +41,7 @@ module Star
       end
 
       Property = Struct.new(
-        "Property", :name, :datatype, :required, :default_proc, keyword_init: true
+        :name, :datatype, :required, :default_proc, keyword_init: true
       ) do
         def to_json(*)
           {name:, type: datatype, required:, has_default: !default_proc.nil?}.to_json(*)

@@ -39,7 +39,8 @@ router {
       }
     }
 
-    app.models.tasklists.create(name:).to_json
+    id = SecureRandom.uuid
+    app.models.tasklists.create(id:, name:).to_json
   }
 
   patch("/tasklists/{id}") {
@@ -74,5 +75,22 @@ router {
 
     id = SecureRandom.uuid
     app.models.tasks.create(id:, tasklist_id:, title:, date_due:).to_json
+  }
+
+  get("/tasklists/{tasklist_id}/tasks/{id}") {
+    app.models.tasks.find(tasklist_id:, id:).to_json
+  }
+
+  patch("/tasklists/{tasklist_id}/tasks/{id}") {
+    use {
+      body {
+        title Object
+        date_due Object
+        closed_at Object
+      }
+    }
+
+    update = {title:, date_due:, closed_at:}.filter { |k, v| !v.nil? }.to_h
+    app.models.tasks.update(match: {tasklist_id:, id:}, update:).to_json
   }
 }
