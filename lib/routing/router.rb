@@ -19,7 +19,7 @@ module Star
       def handle(request)
         request => { method:, uri: }
 
-        res = Response.new(headers: {"Content-Type" => "application/json"}, status: 200, request:)
+        res = Response.new(app:, headers: {"Content-Type" => "application/json"}, status: 200, request:)
         route = routes.find { |route| route_match?(uri, route.matcher) && route.method.to_s.upcase == method.upcase }
         unless route
           res.status = 404
