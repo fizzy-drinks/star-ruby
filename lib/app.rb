@@ -31,7 +31,7 @@ module Star
         uri, query = uri.split("?")
         query = query.to_s.split("&").each_with_object({}) { |pair, obj|
           key, value = pair.split("=")
-          [key, value || ""]
+          obj[key] = value
         }
         request = Router::Request.new(method:, uri:, query:, headers:)
 
