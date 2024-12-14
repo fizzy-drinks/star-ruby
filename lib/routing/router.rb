@@ -36,6 +36,7 @@ module Star
           res.define_singleton_method(variable.to_sym) { segments[i] }
         end
 
+        res.instance_exec(request, &route.before) if route.before
         res.body = res.instance_exec(request, &route.handler)
         res
       rescue Util::Validation::ValidationError => e
@@ -56,6 +57,6 @@ module Star
     end
 
     Request = Struct.new(:method, :uri, :headers, :query, :body, keyword_init: true)
-    Route = Struct.new(:method, :matcher, :handler, keyword_init: true)
+    Route = Struct.new(:method, :matcher, :handler, :before, keyword_init: true)
   end
 end

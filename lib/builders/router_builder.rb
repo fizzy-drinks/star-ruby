@@ -14,9 +14,13 @@ module Star
         define_method(method) do |matcher = "/", &handler|
           full_scope = [*scope_path, matcher]
           scoped_matcher = full_scope.map { |seg| seg.to_s.sub(%r{^/?(.*)/?$}, '\1') }.reject(&:empty?).join("/")
-          puts scoped_matcher
-          router.routes << Routing::Route.new(method:, matcher: scoped_matcher, handler:)
+          router.routes << Routing::Route.new(method:, matcher: scoped_matcher, handler:, before:)
         end
+      end
+
+      def before(&block)
+        @before = block if block
+        @before
       end
 
       def scope path, &block
