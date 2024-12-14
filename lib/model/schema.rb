@@ -12,18 +12,24 @@ module Star
           property = properties[key.to_sym]
           klass = property.datatype
 
-          raise TypeError("Property #{key} is not of type #{klass.name}!") unless value.is_a?(klass) || map_to_type(klass, value)
+          unless value.nil? || value.is_a?(klass) || (value = map_to_type(klass, value))
+            raise SchemaError, "Property #{key} is not of type #{klass.name}!"
+          end
 
           obj[key] = value
         end
       end
 
       def map_to_type klass, value
+        return if value.nil?
+
         if klass == DateTime
           DateTime.iso8601(value)
         elsif klass == String
           value.to_s
         end
+      rescue Date::Error => e
+        raise SchemaError, e.message
       end
 
       def add_property(property)
@@ -41,6 +47,8 @@ module Star
           {name:, type: datatype, required:, has_default: !default_proc.nil?}.to_json(*)
         end
       end
+
+      class SchemaError < StandardError; end
     end
   end
 end
