@@ -42,6 +42,9 @@ module Star
           request.body = JSON.parse body
         end
         response = router.handle(request)
+        if response.body.is_a?(Hash) || response.body.is_a?(Array)
+          response.body = response.body.to_json
+        end
 
         session.puts [
           "HTTP/1.1 200",
