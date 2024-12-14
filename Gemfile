@@ -9,3 +9,7 @@ end
 gem "sqlite3", "~> 2.4"
 
 gem "scrypt", "~> 3.0"
+
+gem "mongo", "~> 2.21"
+
+gem "dotenv", "~> 3.1"
