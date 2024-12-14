@@ -7,7 +7,7 @@ app unhype
 
 db Star::DatabaseAdapter::Json
 
-model(task_lists) {
+model(tasklists) {
   id { string { SecureRandom.uuid } }
   name { required string }
 }
@@ -15,7 +15,7 @@ model(task_lists) {
 model(tasks) {
   id { string { SecureRandom.uuid } }
   title { required string }
-  task_list_id { required string }
+  tasklist_id { required string }
   created_at { date { DateTime.now } }
   date_due { date { DateTime.now } }
   closed_at { date }
@@ -29,7 +29,7 @@ router {
       }
     }
 
-    app.models.task_lists.where(name:).to_json
+    app.models.tasklists.where(name:).to_json
   }
 
   post("/tasklists") {
@@ -39,18 +39,18 @@ router {
       }
     }
 
-    app.models.task_lists.create(name:).to_json
+    app.models.tasklists.create(name:).to_json
   }
 
-  get("/tasklists/{tasklist_id}") {
-    app.models.task_lists.find(id: tasklist_id).to_json
+  get("/tasklists/{id}") {
+    app.models.tasklists.find(id:).to_json
   }
 
   get("/tasklists/{tasklist_id}/tasks") {
     app.models.tasks.where(tasklist_id:).to_json
   }
 
-  post("/tasklists/{task_list_id}/tasks") {
+  post("/tasklists/{tasklist_id}/tasks") {
     use {
       body {
         title String
@@ -58,11 +58,7 @@ router {
       }
     }
 
-    app.models.tasks.create(
-      id: SecureRandom.uuid,
-      task_list_id:,
-      title:,
-      date_due:
-    ).to_json
+    id = SecureRandom.uuid
+    app.models.tasks.create(id:, tasklist_id:, title:, date_due:).to_json
   }
 }
