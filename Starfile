@@ -1,11 +1,25 @@
 #!/usr/bin/env ruby
 
 require "securerandom"
+require "base64"
+require "scrypt"
 require "./lib/database_adapter/sqlite"
 
 app unhype
 
 db Star::DatabaseAdapter::Sqlite
+
+model(users) {
+  id { string { SecureRandom.uuid } }
+  username { required string }
+  password { required string }
+}
+
+model(tokens) {
+  value { string { Base64.encode64(SecureRandom.uuid).strip } }
+  user_id { required string }
+  issued { date { DateTime.now } }
+}
 
 model(tasklists) {
   id { string { SecureRandom.uuid } }
@@ -33,9 +47,72 @@ router {
     def modified_at = now
 
     def deleted_at = now
+
+    def authorize!
+      use {
+        headers {
+          authorization { string }
+        }
+      }
+
+      token = app.models.tokens.find(value: authorization)
+      raise Star::Routing::AuthorizationError, "unauthorized" unless token
+
+      @user = app.models.users.find(id: token.user_id)
+
+      raise Star::Routing::AuthorizationError, "unauthorized" unless current_user
+    end
+
+    def current_user = @user
+  }
+
+  tokens {
+    get {
+      use {
+        headers {
+          authorization { required string }
+        }
+      }
+
+      username, password = authorization.split(":")
+      user = app.models.users.find(username:)
+      raise Star::Routing::AuthorizationError unless user && SCrypt::Password.new(user.password) == password
+
+      token = app.models.tokens.create(user_id: user.id)
+      token.value.to_json
+    }
+  }
+
+  users {
+    post {
+      use {
+        body {
+          username { required string }
+          password { required string }
+        }
+      }
+
+      already_exists = app.models.users.find(username:)
+      next {message: "This username is taken!"}.to_json if already_exists
+
+      hashed = SCrypt::Password.create(password)
+      app.models.users.create(username:, password: hashed)
+
+      {username:}.to_json(only: %w[username])
+    }
+
+    get("me") {
+      authorize!
+      current_user => {username:, id:}
+      {username:, id:}.to_json
+    }
   }
 
   tasklists {
+    before {
+      authorize!
+    }
+
     get {
       use {
         query {

@@ -7,3 +7,5 @@ group :development do
 end
 
 gem "sqlite3", "~> 2.4"
+
+gem "scrypt", "~> 3.0"
