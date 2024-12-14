@@ -22,73 +22,81 @@ model(tasks) {
 }
 
 router {
-  get("/tasklists") {
-    use {
-      query {
-        name Object
+  tasklists {
+    get {
+      use {
+        query {
+          name Object
+        }
       }
+
+      app.models.tasklists.where(name:).to_json
     }
 
-    app.models.tasklists.where(name:).to_json
-  }
-
-  post("/tasklists") {
-    use {
-      body {
-        name String
-      }
+    get("{id}") {
+      app.models.tasklists.find(id:).to_json
     }
 
-    app.models.tasklists.create(name:).to_json
-  }
-
-  patch("/tasklists/{id}") {
-    use {
-      body {
-        name String
+    post {
+      use {
+        body {
+          name String
+        }
       }
+
+      app.models.tasklists.create(name:).to_json
     }
 
-    app.models.tasklists.update(match: {id:}, update: {name:})
-  }
-
-  delete("/tasklists/{id}") {
-    app.models.tasklists.delete(id:)
-  }
-
-  get("/tasklists/{id}") {
-    app.models.tasklists.find(id:).to_json
-  }
-
-  get("/tasklists/{tasklist_id}/tasks") {
-    app.models.tasks.where(tasklist_id:).to_json
-  }
-
-  post("/tasklists/{tasklist_id}/tasks") {
-    use {
-      body {
-        title String
-        date_due Object
+    patch("{id}") {
+      use {
+        body {
+          name String
+        }
       }
+
+      app.models.tasklists.update(match: {id:}, update: {name:})
     }
 
-    app.models.tasks.create(tasklist_id:, title:, date_due:).to_json
-  }
-
-  get("/tasklists/{tasklist_id}/tasks/{id}") {
-    app.models.tasks.find(tasklist_id:, id:).to_json
-  }
-
-  patch("/tasklists/{tasklist_id}/tasks/{id}") {
-    use {
-      body {
-        title Object
-        date_due Object
-        closed_at Object
-      }
+    delete("{id}") {
+      app.models.tasklists.delete(id:)
     }
 
-    update = {title:, date_due:, closed_at:}.filter { |k, v| !v.nil? }.to_h
-    app.models.tasks.update(match: {tasklist_id:, id:}, update:).to_json
+    scope("{tasklist_id}/tasks") {
+      get {
+        app.models.tasks.where(tasklist_id:).to_json
+      }
+
+      get("{id}") {
+        app.models.tasks.find(tasklist_id:, id:).to_json
+      }
+
+      post {
+        use {
+          body {
+            title String
+            date_due Object
+          }
+        }
+
+        app.models.tasks.create(tasklist_id:, title:, date_due:).to_json
+      }
+
+      patch("{id}") {
+        use {
+          body {
+            title Object
+            date_due Object
+            closed_at Object
+          }
+        }
+
+        update = {title:, date_due:, closed_at:}.filter { |k, v| !v.nil? }.to_h
+        app.models.tasks.update(match: {tasklist_id:, id:}, update:).to_json
+      }
+
+      delete("{id}") {
+        app.models.tasks.delete(tasklist_id:, id:).to_json
+      }
+    }
   }
 }

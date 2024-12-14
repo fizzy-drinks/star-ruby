@@ -7,14 +7,30 @@ module Star
         @router = app.router
       end
 
-      attr_reader :router
+      attr_reader :router, :scope_path
 
       methods = %i[get post put patch delete options]
       methods.each do |method|
-        define_method(method) do |matcher, &handler|
-          router.routes << Routing::Route.new(method:, matcher:, handler:)
+        define_method(method) do |matcher = "/", &handler|
+          full_scope = [*scope_path, matcher]
+          scoped_matcher = full_scope.map { |seg| seg.to_s.sub(%r{^/?(.*)/?$}, '\1') }.reject(&:empty?).join("/")
+          puts scoped_matcher
+          router.routes << Routing::Route.new(method:, matcher: scoped_matcher, handler:)
         end
       end
+
+      def scope path, &block
+        @scope_path ||= []
+        @scope_path << path
+        instance_exec(&block)
+        @scope_path.pop
+      end
+
+      def method_missing method, *, &block
+        scope method, *, &block
+      end
+
+      def respond_to_missing? = true
 
       def self.build app, &block
         builder = new(app)

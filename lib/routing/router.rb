@@ -12,6 +12,7 @@ module Star
 
       def route_match?(uri, matcher)
         re = %r{^#{matcher.gsub(/\{[^{}\/]+\}/, "[^/]+")}/?$}
+        uri = uri.sub(%r{^/?(.*)/?$}, '\1')
         uri == matcher || uri =~ re
       end
 
