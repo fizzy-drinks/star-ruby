@@ -15,7 +15,7 @@ module Star
       end
 
       def body(&block)
-        validation = ContextValidator.new(request.body)
+        validation = ContextValidator.new(request.body || {})
         validation.instance_exec(&block)
         properties.merge!(validation.properties)
       end

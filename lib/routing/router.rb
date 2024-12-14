@@ -38,7 +38,7 @@ module Star
 
         res.body = res.instance_exec(request, &route.handler)
         res
-      rescue ValidationError, Model::Schema::SchemaError => e
+      rescue Util::Validation::ValidationError => e
         res.body = {message: e.message}.to_json
         res.status = 400
         res
