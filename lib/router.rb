@@ -16,7 +16,7 @@ module Star
       request => { method:, uri: }
 
       res = Response.new(headers: {"Content-Type" => "application/json"}, status: 200, request:)
-      route = routes.find { |route| route_match?(uri, route.matcher) && route.method.to_s.upcase == method }
+      route = routes.find { |route| route_match?(uri, route.matcher) && route.method.to_s.upcase == method.upcase }
       unless route
         res.status = 404
         res.body = {message: "Not found"}.to_json
