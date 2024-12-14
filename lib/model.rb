@@ -12,7 +12,8 @@ module Star
     attr_reader :app, :name, :schema
 
     def find(**kwargs)
-      Instance.new(self, app.db.find(name, kwargs))
+      found = app.db.find(name, kwargs)
+      found && Instance.new(self, found)
     end
 
     def where(**kwargs)
