@@ -3,7 +3,7 @@
 require "securerandom"
 require "base64"
 require "scrypt"
-require "./lib/database_adapter/mongo"
+require "app"
 
 app unhype
 

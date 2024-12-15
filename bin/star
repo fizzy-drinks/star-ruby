@@ -3,14 +3,12 @@
 require "json"
 require_relative "../lib/app_builder"
 
-if __FILE__ == $0
-  app = Star::AppBuilder.build {
-    instance_eval(File.read("./Starfile"), File.absolute_path(Dir.pwd + '/Starfile'))
-  }
+app = Star::AppBuilder.build {
+  instance_eval(File.read("./Starfile"), File.absolute_path(Dir.pwd + '/Starfile'))
+}
 
-  if app.respond_to?(:main)
-    instance_exec(&app.method(:main))
-  else
-    app.serve!
-  end
+if app.respond_to?(:main)
+  instance_exec(&app.method(:main))
+else
+  app.serve!
 end

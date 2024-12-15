@@ -1,0 +1,8 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem "scrypt", "~> 3.0"
+gem "base64", "~> 0.2.0"
+
+gem "star_server", git: "https://github.com/fizzy-drinks/star-ruby"
