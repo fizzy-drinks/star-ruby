@@ -2,7 +2,15 @@
 
 source "https://rubygems.org"
 
-gem "scrypt", "~> 3.0"
-gem "base64", "~> 0.2.0"
+gem "star_server", path: "../../", require: "star"
 
-gem "star_server", git: "https://github.com/fizzy-drinks/star-ruby"
+gem "base64", "~> 0.2.0"
+gem "dotenv", "~> 3.1"
+gem "mongo", "~> 2.21"
+gem "scrypt", "~> 3.0"
+
+group :development do
+  gem "pry", "~> 0.15.0"
+  gem "ruby-lsp", "~> 0.22.1"
+  gem "standard", "~> 1.43"
+end

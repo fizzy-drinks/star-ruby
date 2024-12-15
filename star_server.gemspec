@@ -20,10 +20,9 @@ Gem::Specification.new do |spec|
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  spec.files = Dir.glob("{bin,lib}/**/*")
+  spec.files = Dir["lib/**/*", "bin/**/*"] + ["Gemfile"]
   spec.bindir = "bin"
   spec.executables = spec.files.grep(%r{\Abin/}) { |f| File.basename(f) }
-  spec.require_paths = [File.absolute_path("lib", __dir__), File.absolute_path("lib/database_adapter", __dir__)]
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"

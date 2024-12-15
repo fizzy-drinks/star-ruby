@@ -3,7 +3,7 @@
 require "securerandom"
 require "base64"
 require "scrypt"
-require "app"
+require "star_server/database_adapter/mongo"
 
 app unhype
 

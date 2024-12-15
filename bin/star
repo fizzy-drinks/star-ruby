@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "json"
-require_relative "../lib/app_builder"
+require "star_server/app_builder"
 
 app = Star::AppBuilder.build {
   instance_eval(File.read("./Starfile"), File.absolute_path(Dir.pwd + '/Starfile'))
