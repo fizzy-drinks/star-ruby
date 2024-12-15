@@ -1,5 +1,4 @@
 require "mongo"
-require "dotenv"
 require_relative "base"
 
 module Star
@@ -36,8 +35,7 @@ module Star
       private
 
       def db
-        @db ||= Dotenv.load
-          .then { Mongo::Client.new(ENV["MONGO_URI"], database: ENV["MONGO_DATABASE"]) }
+        @db ||= Mongo::Client.new(ENV["MONGO_URI"], database: ENV["MONGO_DATABASE"])
       end
     end
   end
