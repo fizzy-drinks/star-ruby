@@ -49,6 +49,7 @@ module Star
         session.puts [
           "HTTP/1.1 #{response.status}",
           *response.headers.map { |k, v| "#{k}: #{v}" },
+          "Content-Length: #{response.body.to_s.length}",
           "",
           response.body
         ].join("\n")
