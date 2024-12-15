@@ -47,8 +47,8 @@ module Star
         end
 
         session.puts [
-          "HTTP/1.1 200",
-          *response.headers.map { |k, v| "#{k}: #{v}" }.join("\n"),
+          "HTTP/1.1 #{response.status}",
+          *response.headers.map { |k, v| "#{k}: #{v}" },
           "",
           response.body
         ].join("\n")
