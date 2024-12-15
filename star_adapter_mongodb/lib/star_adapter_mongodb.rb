@@ -1,3 +1,4 @@
+require "star_server/database_adapter/base"
 require "mongo"
 
 module Star
