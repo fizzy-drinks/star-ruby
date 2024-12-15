@@ -5,6 +5,12 @@ PATH
       mongo (~> 2.21)
 
 PATH
+  remote: ../../star_adapter_sqlite
+  specs:
+    star_adapter_sqlite (0.1.0)
+      sqlite3 (~> 2.4)
+
+PATH
   remote: ../../star_server
   specs:
     star_server (0.1.0)
@@ -26,6 +32,7 @@ GEM
     scrypt (3.0.8)
       ffi-compiler (>= 1.0, < 2.0)
       rake (>= 9, < 14)
+    sqlite3 (2.4.1-arm64-darwin)
 
 PLATFORMS
   arm64-darwin-23
@@ -36,6 +43,7 @@ DEPENDENCIES
   dotenv (~> 3.1)
   scrypt (~> 3.0)
   star_adapter_mongodb!
+  star_adapter_sqlite!
   star_server!
 
 BUNDLED WITH

@@ -4,11 +4,14 @@ require "securerandom"
 require "base64"
 require "dotenv/load"
 require "scrypt"
-require "star_server/database_adapter/mongo"
+
+require "star_adapter_mongodb"
+# require "star_adapter_sqlite"
 
 app unhype
 
 db Star::DatabaseAdapter::MongoDB
+# db Star::DatabaseAdapter::Sqlite
 
 Star.load self, :models
 

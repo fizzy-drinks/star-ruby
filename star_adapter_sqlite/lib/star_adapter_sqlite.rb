@@ -1,9 +1,14 @@
+require "star_server/database_adapter/base"
 require "sqlite3"
-require_relative "base"
 
 module Star
   module DatabaseAdapter
     class Sqlite < Base
+      warn "WARNING: You should probably work with a real SQLite ORM!"
+      warn "         This is just my attempt at demonstrating how a SQL adapter for Star would work."
+      warn ""
+      warn "         In any case, contributions are welcome."
+
       def find(collection, matcher)
         valid_matchers = matcher.filter { |_k, v| !v.nil? }
 
