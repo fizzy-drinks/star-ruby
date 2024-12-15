@@ -4,7 +4,7 @@ require_relative "../app"
 
 module Star
   def self.load(where, module_name)
-    filename = File.join(Dir.pwd, "#{module_name}.star.rb")
+    filename = File.join(File.dirname(caller_locations(1..1).first.path), "#{module_name}.star.rb")
     where.instance_eval(File.read(filename), filename)
   end
 
