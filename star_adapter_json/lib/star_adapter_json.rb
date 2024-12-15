@@ -1,4 +1,4 @@
-require_relative "base"
+require "star_server/database_adapter/base"
 require "json"
 
 module Star

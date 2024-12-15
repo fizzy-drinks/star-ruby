@@ -5,12 +5,14 @@ require "base64"
 require "dotenv/load"
 require "scrypt"
 
-require "star_adapter_mongodb"
+require "star_adapter_json"
+# require "star_adapter_mongodb"
 # require "star_adapter_sqlite"
 
 app unhype
 
-db Star::DatabaseAdapter::MongoDB
+db Star::DatabaseAdapter::Json
+# db Star::DatabaseAdapter::MongoDB
 # db Star::DatabaseAdapter::Sqlite
 
 Star.load self, :models
