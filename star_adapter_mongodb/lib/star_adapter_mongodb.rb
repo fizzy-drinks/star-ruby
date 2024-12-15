@@ -32,8 +32,6 @@ module Star
         where(collection_name, matcher)
       end
 
-      private
-
       def db
         @db ||= Mongo::Client.new(ENV["MONGO_URI"], database: ENV["MONGO_DATABASE"])
       end

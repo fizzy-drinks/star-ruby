@@ -59,8 +59,6 @@ module Star
         end
       end
 
-      private
-
       def db = SQLite3::Database.new("db.sqlite3")
 
       def create_table_if_not_exists(table_name, columns)
