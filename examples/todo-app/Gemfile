@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "star_server", path: "../../", require: "star"
+gem "star_server", path: "../../star_server"
 
 gem "base64", "~> 0.2.0"
 gem "dotenv", "~> 3.1"
