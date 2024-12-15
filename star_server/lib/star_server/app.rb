@@ -52,7 +52,7 @@ module Star
           "Content-Length: #{response.body.to_s.length}",
           "",
           response.body
-        ].join("\n")
+        ].join("\r\n")
         session.close
       end
     end
