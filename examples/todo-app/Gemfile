@@ -3,8 +3,8 @@
 source "https://rubygems.org"
 
 gem "star_server", path: "../../star_server"
+gem "star_adapter_mongodb", path: "../../star_adapter_mongodb"
 
 gem "base64", "~> 0.2.0"
 gem "dotenv", "~> 3.1"
-gem "mongo", "~> 2.21"
 gem "scrypt", "~> 3.0"

@@ -1,5 +1,4 @@
 require "mongo"
-require_relative "base"
 
 module Star
   module DatabaseAdapter
