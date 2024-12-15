@@ -9,7 +9,7 @@ require "star_adapter_json"
 # require "star_adapter_mongodb"
 # require "star_adapter_sqlite"
 
-app unhype
+app todo_app
 
 db Star::DatabaseAdapter::Json
 # db Star::DatabaseAdapter::MongoDB
